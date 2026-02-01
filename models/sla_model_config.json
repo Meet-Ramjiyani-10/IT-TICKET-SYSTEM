@@ -1,0 +1,5 @@
+{
+  "sla_breach_threshold": 0.4,
+  "positive_class": "SLA_BREACH",
+  "note": "Threshold chosen to maximize breach recall"
+}

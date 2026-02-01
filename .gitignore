@@ -1,0 +1,43 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ===== Virtual Environments =====
+venv/
+env/
+.ml-env/
+.conda/
+.conda_env/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== IDE =====
+.vscode/
+.idea/
+
+# ===== Data (Raw & Large) =====
+data/raw/
+data/processed/
+
+# ===== Models (optional – see note below) =====
+# Uncomment if models are large
+# models/*.joblib
+# models/*.pkl
+
+# ===== Logs =====
+logs/
+
+# ===== Secrets =====
+.env
+*.env
+
+# ===== Temporary Files =====
+*.tmp
+*.bak
