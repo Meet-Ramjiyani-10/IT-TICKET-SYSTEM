@@ -5,7 +5,7 @@ import {
 import { ShieldAlert } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const FALLBACK = [
   { week: "W1", breachRate: 6.2, target: 5, resolved: 94 },
   { week: "W2", breachRate: 5.8, target: 5, resolved: 92 },
   { week: "W3", breachRate: 7.1, target: 5, resolved: 89 },
@@ -60,7 +60,9 @@ const CustomDot = (props) => {
   );
 };
 
-export default function SLATrendChart() {
+export default function SLATrendChart({ data: propData, loading = false }) {
+  const data = propData ?? FALLBACK;
+
   return (
     <ChartCard
       title="SLA Compliance Trend"

@@ -5,7 +5,9 @@ import {
 import { PieChart as PieIcon } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const COLORS = ["#3b82f6", "#8b5cf6", "#06b6d4", "#f59e0b", "#10b981", "#ef4444", "#64748b"];
+
+const FALLBACK = [
   { name: "Hardware", value: 285, color: "#3b82f6" },
   { name: "Software", value: 340, color: "#8b5cf6" },
   { name: "Network", value: 195, color: "#06b6d4" },
@@ -14,8 +16,6 @@ const data = [
   { name: "Database", value: 96, color: "#ef4444" },
   { name: "Other", value: 90, color: "#64748b" },
 ];
-
-const total = data.reduce((sum, d) => sum + d.value, 0);
 
 const renderActiveShape = (props) => {
   const {
@@ -71,8 +71,10 @@ const CustomLegend = ({ payload, activeIndex, onLegendEnter, onLegendLeave }) =>
   </div>
 );
 
-export default function CategoryDistributionChart() {
+export default function CategoryDistributionChart({ data: propData, loading = false }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const data = (propData ?? FALLBACK).map((d, i) => ({ ...d, color: d.color || COLORS[i % COLORS.length] }));
+  const total = data.reduce((sum, d) => sum + d.value, 0);
 
   const onPieEnter = useCallback((_, index) => setActiveIndex(index), []);
 

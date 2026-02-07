@@ -5,7 +5,7 @@ import {
 import { TrendingUp } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const FALLBACK = [
   { month: "Jan", opened: 180, resolved: 165, pending: 15 },
   { month: "Feb", opened: 210, resolved: 195, pending: 30 },
   { month: "Mar", opened: 195, resolved: 188, pending: 37 },
@@ -36,8 +36,9 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export default function TicketVolumeChart() {
+export default function TicketVolumeChart({ data: propData, loading = false }) {
   const [activeArea, setActiveArea] = useState(null);
+  const data = propData ?? FALLBACK;
 
   return (
     <ChartCard

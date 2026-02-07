@@ -1,28 +1,58 @@
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard, Ticket, PlusCircle, Users, ShieldAlert, Activity,
+} from "lucide-react";
+
+const navItems = [
+  { label: "Dashboard", to: "/", icon: LayoutDashboard },
+  { label: "Tickets", to: "/tickets", icon: Ticket },
+  { label: "Create Ticket", to: "/create-ticket", icon: PlusCircle },
+  { label: "Agents", to: "/agents", icon: Users },
+];
+
 export default function Sidebar() {
   return (
-    <div className="w-64 h-screen bg-slate-900 text-white flex flex-col">
-      
+    <div className="w-64 h-screen bg-slate-900 text-white flex flex-col flex-shrink-0">
       <div className="p-6 text-xl font-bold border-b border-slate-700">
         IT Service Desk AI
       </div>
 
-      <nav className="flex-1 p-4 space-y-3">
-        <SidebarItem label="Dashboard" />
-        <SidebarItem label="Tickets" />
-        <SidebarItem label="Create Ticket" />
-        <SidebarItem label="Agents" />
-        <SidebarItem label="SLA Monitor" />
-        <SidebarItem label="System Status" />
+      <nav className="flex-1 p-4 space-y-1">
+        {navItems.map((item) => (
+          <SidebarItem key={item.to} {...item} />
+        ))}
       </nav>
 
+      <div className="p-4 border-t border-slate-700">
+        <div className="flex items-center gap-3 px-3 py-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold">
+            A
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-200">Admin</p>
+            <p className="text-xs text-slate-500">admin@company.com</p>
+          </div>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-function SidebarItem({ label }) {
+function SidebarItem({ label, to, icon: Icon }) {
   return (
-    <div className="px-4 py-2 rounded-lg cursor-pointer hover:bg-slate-800 transition duration-200">
+    <NavLink
+      to={to}
+      end={to === "/"}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-4 py-2.5 rounded-lg transition duration-200 text-sm font-medium
+        ${isActive
+          ? "bg-blue-600/20 text-blue-400 border-l-2 border-blue-400"
+          : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+        }`
+      }
+    >
+      <Icon className="w-4.5 h-4.5 flex-shrink-0" />
       {label}
-    </div>
-  )
+    </NavLink>
+  );
 }

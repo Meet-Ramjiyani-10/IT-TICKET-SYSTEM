@@ -5,7 +5,15 @@ import {
 import { BarChart3 } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const PRIORITY_COLORS = {
+  Critical: { color: "#ef4444", bg: "#fef2f2" },
+  High: { color: "#f97316", bg: "#fff7ed" },
+  Medium: { color: "#eab308", bg: "#fefce8" },
+  Low: { color: "#22c55e", bg: "#f0fdf4" },
+  Info: { color: "#3b82f6", bg: "#eff6ff" },
+};
+
+const FALLBACK = [
   { priority: "Critical", count: 47, color: "#ef4444", bg: "#fef2f2" },
   { priority: "High", count: 156, color: "#f97316", bg: "#fff7ed" },
   { priority: "Medium", count: 428, color: "#eab308", bg: "#fefce8" },
@@ -16,6 +24,7 @@ const data = [
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
+  const total = payload[0]?.payload?._totalCount || 1;
   return (
     <div className="bg-slate-800 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 text-xs">
       <div className="flex items-center gap-2 mb-1">
@@ -23,7 +32,7 @@ const CustomTooltip = ({ active, payload }) => {
         <span className="font-bold">{d.priority}</span>
       </div>
       <p className="text-slate-300">{d.count} tickets</p>
-      <p className="text-slate-400">{((d.count / 1284) * 100).toFixed(1)}% of total</p>
+      <p className="text-slate-400">{((d.count / total) * 100).toFixed(1)}% of total</p>
     </div>
   );
 };
@@ -47,8 +56,16 @@ const CustomBar = (props) => {
   );
 };
 
-export default function PriorityBarChart() {
+export default function PriorityBarChart({ data: propData, loading = false }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const data = (propData ?? FALLBACK).map((d) => ({
+    ...d,
+    color: d.color || PRIORITY_COLORS[d.priority]?.color || "#94a3b8",
+    bg: d.bg || PRIORITY_COLORS[d.priority]?.bg || "#f8fafc",
+  }));
+  const totalCount = data.reduce((s, d) => s + d.count, 0);
+  // Attach totalCount to each item so the tooltip (defined outside) can access it
+  const chartData = data.map((d) => ({ ...d, _totalCount: totalCount }));
 
   return (
     <ChartCard
@@ -59,7 +76,7 @@ export default function PriorityBarChart() {
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={data}
+          data={chartData}
           margin={{ top: 10, right: 20, left: -10, bottom: 5 }}
           barCategoryGap="20%"
           onMouseLeave={() => setHoveredIndex(null)}
@@ -81,7 +98,7 @@ export default function PriorityBarChart() {
             animationDuration={800}
             animationEasing="ease-out"
           >
-            {data.map((entry, index) => (
+            {chartData.map((entry, index) => (
               <Cell
                 key={index}
                 fill={entry.color}
