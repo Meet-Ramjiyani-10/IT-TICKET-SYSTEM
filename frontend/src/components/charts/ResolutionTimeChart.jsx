@@ -5,7 +5,7 @@ import {
 import { Timer } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const FALLBACK = [
   { range: "<1h", count: 185, cumulative: 14.4 },
   { range: "1-4h", count: 342, cumulative: 41.1 },
   { range: "4-8h", count: 278, cumulative: 62.8 },
@@ -41,7 +41,9 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export default function ResolutionTimeChart() {
+export default function ResolutionTimeChart({ data: propData, loading = false }) {
+  const data = propData ?? FALLBACK;
+
   return (
     <ChartCard
       title="Resolution Time Distribution"

@@ -5,7 +5,7 @@ import {
 import { Users } from "lucide-react";
 import ChartCard from "./ChartCard";
 
-const data = [
+const FALLBACK = [
   { agent: "Sarah M.", resolved: 142, avgTime: 2.1, csat: 4.8 },
   { agent: "David K.", resolved: 128, avgTime: 2.4, csat: 4.6 },
   { agent: "Priya S.", resolved: 118, avgTime: 1.9, csat: 4.9 },
@@ -45,8 +45,9 @@ const CustomTooltip = ({ active, payload }) => {
   );
 };
 
-export default function AgentPerformanceChart() {
+export default function AgentPerformanceChart({ data: propData, loading = false }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const data = propData ?? FALLBACK;
 
   return (
     <ChartCard
