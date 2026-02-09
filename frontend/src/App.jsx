@@ -4,8 +4,10 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import TicketTable from "./components/TicketTable";
 import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
+import PageTransition from "./components/PageTransition";
 import React from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 
 // Sample data — replace with API fetch for real-time data
 const sampleTickets = [
@@ -192,19 +194,10 @@ const sampleTickets = [
 ];
 
 /*
-  Routing changes summary (minimal change):
-  - Added react-router-dom Routes in this file so the Login page can render
-    at `/` without the dashboard layout.
-  - Created an inline `Layout` component that mounts the existing
-    `Sidebar` + `Navbar` and uses an <Outlet/> for nested routes. This
-    preserves the original dashboard layout and keeps Dashboard UI
-    unchanged.
-  - Route map:
-      /        -> Login (no layout)
-      /dashboard -> Layout (Sidebar + Navbar) with Dashboard + TicketTable
-
-  Reasoning: This is the minimal-change approach — keeps existing
-  Dashboard and layout code intact while isolating Login at root.
+  Route map:
+    /          -> LandingPage (marketing / splash page)
+    /login     -> Login (authentication)
+    /dashboard -> Layout (Sidebar + Navbar) with Dashboard + TicketTable
 */
 
 function Layout() {
@@ -224,23 +217,30 @@ function Layout() {
 }
 
 export default function App() {
-  return (
-    <Routes>
-      {/* Login page at root */}
-      <Route path="/" element={<Login />} />
+  const location = useLocation();
 
-      {/* Dashboard routes render within the existing layout */}
-      <Route path="/dashboard" element={<Layout />}>
-        <Route
-          index
-          element={
-            <>
-              <Dashboard />
-              <TicketTable tickets={sampleTickets} />
-            </>
-          }
-        />
-      </Route>
-    </Routes>
+  return (
+    <PageTransition>
+      <Routes location={location}>
+        {/* Landing page at root */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Login page */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Dashboard routes render within the existing layout */}
+        <Route path="/dashboard" element={<Layout />}>
+          <Route
+            index
+            element={
+              <>
+                <Dashboard />
+                <TicketTable tickets={sampleTickets} />
+              </>
+            }
+          />
+        </Route>
+      </Routes>
+    </PageTransition>
   );
 }
