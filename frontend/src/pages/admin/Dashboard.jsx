@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import StatCard from "../components/statCard";
-import TicketVolumeChart from "../components/charts/TicketVolumeChart";
-import CategoryDistributionChart from "../components/charts/CategoryDistributionChart";
-import PriorityBarChart from "../components/charts/PriorityBarChart";
-import SLATrendChart from "../components/charts/SLATrendChart";
-import AgentPerformanceChart from "../components/charts/AgentPerformanceChart";
-import ResolutionTimeChart from "../components/charts/ResolutionTimeChart";
-import TicketTable from "../components/TicketTable";
-import { dashboardAPI, ticketsAPI } from "../services/api";
+import StatCard from "../../components/metrics/statCard";
+import TicketVolumeChart from "../../components/charts/TicketVolumeChart";
+import CategoryDistributionChart from "../../components/charts/CategoryDistributionChart";
+import PriorityBarChart from "../../components/charts/PriorityBarChart";
+import SLATrendChart from "../../components/charts/SLATrendChart";
+import AgentPerformanceChart from "../../components/charts/AgentPerformanceChart";
+import ResolutionTimeChart from "../../components/charts/ResolutionTimeChart";
+import TicketTable from "../../components/ui/TicketTable";
+import { dashboardAPI, ticketsAPI } from "../../services/api";
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 
 // Fallback static data used when the API is unreachable

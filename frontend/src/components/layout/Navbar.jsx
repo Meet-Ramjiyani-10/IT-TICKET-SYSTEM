@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, LogOut, RefreshCw } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const pageTitles = {
   "/": "Dashboard Overview",

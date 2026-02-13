@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ticketsAPI, slaAPI } from "../services/api";
+import { ticketsAPI, slaAPI } from "../../services/api";
 import {
   Send, AlertCircle, CheckCircle2, Loader2, ShieldAlert,
   ChevronDown, X,

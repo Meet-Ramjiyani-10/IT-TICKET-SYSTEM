@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import TicketTable from "../components/TicketTable";
-import { ticketsAPI } from "../services/api";
+import TicketTable from "../../components/ui/TicketTable";
+import { ticketsAPI } from "../../services/api";
 import { RefreshCw, AlertCircle, PlusCircle } from "lucide-react";
 
 export default function Tickets() {

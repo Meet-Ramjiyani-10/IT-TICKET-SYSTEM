@@ -1,11 +1,13 @@
 
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
-import TicketTable from "./components/TicketTable";
-import Login from "./pages/Login";
-import LandingPage from "./pages/LandingPage";
-import PageTransition from "./components/PageTransition";
+import Sidebar from "../components/layout/Sidebar";
+import Navbar from "../components/layout/Navbar";
+import Dashboard from "../pages/admin/Dashboard";
+import Agents from "../pages/admin/Agents";
+import AgentProfile from "../pages/admin/AgentProfile";
+import TicketTable from "../components/ui/TicketTable";
+import Login from "../pages/auth/Login";
+import LandingPage from "../pages/auth/LandingPage";
+import PageTransition from "../components/layout/PageTransition";
 import React from "react";
 import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 
@@ -239,6 +241,12 @@ export default function App() {
               </>
             }
           />
+        </Route>
+
+        {/* Admin agent routes */}
+        <Route path="/admin/agents" element={<Layout />}>
+          <Route index element={<Agents />} />
+          <Route path=":id" element={<AgentProfile />} />
         </Route>
       </Routes>
     </PageTransition>

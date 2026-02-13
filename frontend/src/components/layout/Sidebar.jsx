@@ -4,10 +4,10 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", to: "/", icon: LayoutDashboard },
+  { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
   { label: "Tickets", to: "/tickets", icon: Ticket },
   { label: "Create Ticket", to: "/create-ticket", icon: PlusCircle },
-  { label: "Agents", to: "/agents", icon: Users },
+  { label: "Agents", to: "/admin/agents", icon: Users },
 ];
 
 export default function Sidebar() {
@@ -42,7 +42,7 @@ function SidebarItem({ label, to, icon: Icon }) {
   return (
     <NavLink
       to={to}
-      end={to === "/"}
+      end={to === "/dashboard"}
       className={({ isActive }) =>
         `flex items-center gap-3 px-4 py-2.5 rounded-lg transition duration-200 text-sm font-medium
         ${isActive
