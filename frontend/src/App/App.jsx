@@ -5,6 +5,8 @@ import Dashboard from "../pages/admin/Dashboard";
 import Agents from "../pages/admin/Agents";
 import AgentProfile from "../pages/admin/AgentProfile";
 import TicketTable from "../components/ui/TicketTable";
+import AdminTickets from "../pages/Tickets/AdminTickets";
+import TicketDetails from "../pages/Tickets/TicketDetails";
 import Login from "../pages/auth/Login";
 import LandingPage from "../pages/auth/LandingPage";
 import PageTransition from "../components/layout/PageTransition";
@@ -241,6 +243,12 @@ export default function App() {
               </>
             }
           />
+        </Route>
+
+        {/* Admin tickets routes */}
+        <Route path="/admin/tickets" element={<Layout />}>
+          <Route index element={<AdminTickets />} />
+          <Route path=":id" element={<TicketDetails />} />
         </Route>
 
         {/* Admin agent routes */}

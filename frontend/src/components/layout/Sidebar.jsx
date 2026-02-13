@@ -1,12 +1,11 @@
 import { NavLink } from "react-router-dom";
 import {
-  LayoutDashboard, Ticket, PlusCircle, Users, ShieldAlert, Activity,
+  LayoutDashboard, Ticket, Users,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
-  { label: "Tickets", to: "/tickets", icon: Ticket },
-  { label: "Create Ticket", to: "/create-ticket", icon: PlusCircle },
+  { label: "Tickets", to: "/admin/tickets", icon: Ticket },
   { label: "Agents", to: "/admin/agents", icon: Users },
 ];
 

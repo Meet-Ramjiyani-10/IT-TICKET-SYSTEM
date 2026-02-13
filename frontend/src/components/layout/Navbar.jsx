@@ -4,8 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 
 const pageTitles = {
   "/": "Dashboard Overview",
+  "/dashboard": "Dashboard Overview",
   "/tickets": "Ticket Management",
-  "/create-ticket": "Create New Ticket",
+  "/admin/tickets": "Ticket Management",
+  "/admin/agents": "Agent Performance",
   "/agents": "Agent Performance",
 };
 
@@ -15,7 +17,9 @@ export default function Navbar() {
   const auth = useAuth() || {};
   const { user = null, logout = async () => {} } = auth;
 
-  const title = pageTitles[location.pathname] || "IT Service Desk";
+  const title = pageTitles[location.pathname]
+    || (location.pathname.startsWith("/admin/tickets/") ? "Ticket Details" : null)
+    || "IT Service Desk";
 
   const handleLogout = async () => {
     await logout();
