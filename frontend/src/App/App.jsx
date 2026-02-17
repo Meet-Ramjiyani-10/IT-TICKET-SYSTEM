@@ -7,6 +7,7 @@ import AgentProfile from "../pages/admin/AgentProfile";
 import TicketTable from "../components/ui/TicketTable";
 import AdminTickets from "../pages/Tickets/AdminTickets";
 import TicketDetails from "../pages/Tickets/TicketDetails";
+import CreateTicket from "../pages/admin/CreateTicket";
 import Login from "../pages/auth/Login";
 import LandingPage from "../pages/auth/LandingPage";
 import PageTransition from "../components/layout/PageTransition";
@@ -249,6 +250,11 @@ export default function App() {
         <Route path="/admin/tickets" element={<Layout />}>
           <Route index element={<AdminTickets />} />
           <Route path=":id" element={<TicketDetails />} />
+        </Route>
+
+        {/* Create ticket route */}
+        <Route path="/create-ticket" element={<Layout />}>
+          <Route index element={<CreateTicket />} />
         </Route>
 
         {/* Admin agent routes */}
