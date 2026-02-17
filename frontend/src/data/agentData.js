@@ -15,6 +15,7 @@ export const agents = [
     sla_success_rate: 96.2,
     csat_avg: 4.8,
     escalation_rate: 3.1,
+    workload_percentage: 62,
     availability_status: "Available",
   },
   {
@@ -30,6 +31,7 @@ export const agents = [
     sla_success_rate: 91.5,
     csat_avg: 4.6,
     escalation_rate: 5.2,
+    workload_percentage: 78,
     availability_status: "Busy",
   },
   {
@@ -45,6 +47,7 @@ export const agents = [
     sla_success_rate: 98.1,
     csat_avg: 4.9,
     escalation_rate: 1.8,
+    workload_percentage: 45,
     availability_status: "Available",
   },
   {
@@ -60,6 +63,7 @@ export const agents = [
     sla_success_rate: 78.4,
     csat_avg: 4.3,
     escalation_rate: 8.7,
+    workload_percentage: 95,
     availability_status: "Overloaded",
   },
   {
@@ -75,6 +79,7 @@ export const agents = [
     sla_success_rate: 88.3,
     csat_avg: 4.5,
     escalation_rate: 4.6,
+    workload_percentage: 58,
     availability_status: "Available",
   },
   {
@@ -90,6 +95,7 @@ export const agents = [
     sla_success_rate: 82.1,
     csat_avg: 4.1,
     escalation_rate: 6.9,
+    workload_percentage: 82,
     availability_status: "Busy",
   },
   {
@@ -105,6 +111,7 @@ export const agents = [
     sla_success_rate: 94.7,
     csat_avg: 4.7,
     escalation_rate: 2.5,
+    workload_percentage: 50,
     availability_status: "Available",
   },
 ];
@@ -199,8 +206,11 @@ export function getSlaRiskColor(risk) {
   return "text-emerald-600";
 }
 
+/** SLA risk background for progress bars */
 export function getSlaRiskBg(risk) {
   if (risk >= 75) return "bg-red-500";
-  if (risk >= 50) return "bg-amber-400";
+  if (risk >= 50) return "bg-amber-500";
   return "bg-emerald-500";
 }
+
+

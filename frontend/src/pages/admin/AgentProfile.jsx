@@ -1,26 +1,34 @@
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft, Briefcase, Award, Clock, ShieldCheck, Star,
-  TrendingUp, AlertTriangle, Ticket, CheckCircle2, UserCircle,
+  ArrowLeft, Clock, ShieldCheck, Star,
+  AlertTriangle, Ticket, CheckCircle2, UserCircle,
+  Briefcase, Gauge, Activity,
 } from "lucide-react";
 import {
   agents, agentTickets,
   getSlaColor, getCsatColor, getStatusConfig,
-  getSlaRiskColor, getSlaRiskBg,
+  getSlaRiskColor, getSlaRiskBg, getWorkloadColor,
 } from "../../data/agentData";
 
-// ── Small stat block used in the Performance Stats Grid ──────────
-function StatBlock({ icon: Icon, label, value, color = "text-slate-800", subtitle }) {
+// ── Compact stat pill used in the metrics row ────────────────────
+function MetricPill({ icon: Icon, label, value, accent = "indigo" }) {
+  const accentMap = {
+    indigo: "border-indigo-400 bg-indigo-50 text-indigo-600",
+    amber: "border-amber-400 bg-amber-50 text-amber-600",
+    red: "border-red-400 bg-red-50 text-red-600",
+    emerald: "border-emerald-400 bg-emerald-50 text-emerald-600",
+    violet: "border-violet-400 bg-violet-50 text-violet-600",
+  };
+  const c = accentMap[accent] || accentMap.indigo;
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200/60 hover:shadow-md transition-all duration-200">
-      <div className="flex items-center gap-2 mb-3">
-        <div className={`p-2 rounded-lg bg-slate-100`}>
-          <Icon className={`w-4 h-4 ${color}`} strokeWidth={2} />
-        </div>
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}</span>
+    <div className="bg-white rounded-lg border border-slate-200 shadow-sm px-4 py-3 flex items-center gap-3 border-l-[3px]" style={{ borderLeftColor: `var(--color-${accent}-400)` }}>
+      <div className={`p-1.5 rounded-md ${c.split(" ").slice(1, 3).join(" ")}`}>
+        <Icon className={`w-3.5 h-3.5 ${c.split(" ")[2]}`} strokeWidth={2.2} />
       </div>
-      <p className={`text-2xl font-extrabold ${color}`}>{value}</p>
-      {subtitle && <p className="text-xs text-slate-400 mt-1">{subtitle}</p>}
+      <div>
+        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">{label}</p>
+        <p className="text-base font-bold text-slate-800 leading-tight">{value}</p>
+      </div>
     </div>
   );
 }
@@ -36,7 +44,7 @@ const PRIO = {
 function PriorityBadge({ priority }) {
   const c = PRIO[priority] || PRIO.Medium;
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ${c.bg} ${c.text} ${c.ring}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-semibold rounded-full ring-1 ${c.bg} ${c.text} ${c.ring}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
       {priority}
     </span>
@@ -45,14 +53,14 @@ function PriorityBadge({ priority }) {
 
 const STATUS_CFG = {
   Open:          { bg: "bg-slate-100", text: "text-slate-700" },
-  "In Progress": { bg: "bg-blue-50", text: "text-blue-700" },
+  "In Progress": { bg: "bg-indigo-50", text: "text-indigo-700" },
   Escalated:     { bg: "bg-purple-50", text: "text-purple-700" },
 };
 
 function StatusBadge({ status }) {
   const c = STATUS_CFG[status] || STATUS_CFG.Open;
   return (
-    <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${c.bg} ${c.text}`}>
+    <span className={`inline-flex px-2 py-0.5 text-[11px] font-medium rounded-full ${c.bg} ${c.text}`}>
       {status}
     </span>
   );
@@ -73,7 +81,7 @@ export default function AgentProfile() {
         <p className="text-lg font-semibold text-slate-500">Agent not found</p>
         <button
           onClick={() => navigate("/admin/agents")}
-          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+          className="flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Agents
         </button>
@@ -84,88 +92,83 @@ export default function AgentProfile() {
   const statusCfg = getStatusConfig(agent.availability_status);
   const slaCfg = getSlaColor(agent.sla_success_rate);
   const csatClr = getCsatColor(agent.csat_avg);
+  const wl = agent.workload_percentage || 0;
+  const wlColor = getWorkloadColor(wl);
   const initials = agent.name.split(" ").map((n) => n[0]).join("").slice(0, 2);
 
   return (
-    <div className="space-y-8">
-      {/* Back button */}
+    <div className="space-y-4">
+      {/* Back nav */}
       <button
         onClick={() => navigate("/admin/agents")}
-        className="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 font-medium transition-colors"
+        className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-indigo-600 font-medium transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Agents
+        <ArrowLeft className="w-3.5 h-3.5" /> Back to Performance Center
       </button>
 
-      {/* ── HEADER SECTION ──────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6 lg:p-8">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+      {/* ── HEADER CARD ─────────────────────────────────────────── */}
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+        <div className="flex items-start gap-5">
           {/* Avatar */}
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-500/20 flex-shrink-0">
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white text-lg font-bold shadow-md shadow-indigo-500/15 shrink-0">
             {initials}
           </div>
 
-          {/* Info grid */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Agent Name</p>
-              <p className="text-lg font-bold text-slate-800">{agent.name}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Agent ID</p>
-              <p className="text-sm font-semibold text-slate-600">{agent.id}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Department</p>
-              <p className="text-sm font-semibold text-slate-600">{agent.department}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Specialization</p>
-              <p className="text-sm font-semibold text-slate-600">{agent.specialization}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Experience</p>
-              <p className="text-sm font-semibold text-slate-600">{agent.experience}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Current Status</p>
-              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full ${statusCfg.bg} ${statusCfg.text}`}>
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-lg font-bold text-slate-800">{agent.name}</h1>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-semibold rounded-full ${statusCfg.bg} ${statusCfg.text}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
                 {agent.availability_status}
               </span>
             </div>
-            <div>
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Tickets Active</p>
-              <p className="text-sm font-bold text-blue-600">{agent.open_tickets}</p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+              <span className="font-mono text-slate-400">{agent.id}</span>
+              <span>{agent.department}</span>
+              <span>{agent.specialization}</span>
+              <span>{agent.experience}</span>
+            </div>
+
+            {/* Workload bar inline */}
+            <div className="mt-3 flex items-center gap-3 max-w-xs">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide w-14 shrink-0">Workload</span>
+              <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div className={`h-full rounded-full ${wlColor} transition-all duration-500`} style={{ width: `${wl}%` }} />
+              </div>
+              <span className="text-xs font-bold tabular-nums text-slate-600">{wl}%</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── PERFORMANCE STATS GRID ──────────────────────────────── */}
-      <div>
-        <h2 className="text-base font-semibold text-slate-800 mb-4">Performance Stats</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatBlock icon={Ticket} label="Total Handled" value={agent.total_assigned} color="text-blue-600" subtitle="lifetime tickets" />
-          <StatBlock icon={Clock} label="Avg Resolution" value={agent.avg_resolution_time} color="text-amber-600" subtitle="per ticket" />
-          <StatBlock icon={AlertTriangle} label="Escalation Rate" value={`${agent.escalation_rate}%`} color={agent.escalation_rate > 5 ? "text-red-600" : "text-emerald-600"} subtitle={agent.escalation_rate > 5 ? "above threshold" : "below threshold"} />
-          <StatBlock icon={ShieldCheck} label="SLA Compliance" value={`${agent.sla_success_rate}%`} color={slaCfg.text} subtitle="success rate" />
-          <StatBlock icon={Star} label="CSAT Avg" value={`⭐ ${agent.csat_avg}`} color={csatClr} subtitle="out of 5.0" />
-        </div>
+      {/* ── METRICS ROW ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <MetricPill icon={Ticket} label="Total Handled" value={agent.total_assigned} accent="indigo" />
+        <MetricPill icon={Clock} label="Avg Resolution" value={agent.avg_resolution_time} accent="amber" />
+        <MetricPill icon={AlertTriangle} label="Escalation Rate" value={`${agent.escalation_rate}%`} accent={agent.escalation_rate > 5 ? "red" : "emerald"} />
+        <MetricPill icon={ShieldCheck} label="SLA Compliance" value={`${agent.sla_success_rate}%`} accent={agent.sla_success_rate >= 90 ? "emerald" : agent.sla_success_rate >= 80 ? "amber" : "red"} />
+        <MetricPill icon={Star} label="CSAT Score" value={agent.csat_avg} accent="violet" />
       </div>
 
       {/* ── ACTIVE TICKETS TABLE ────────────────────────────────── */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
-          <h3 className="text-base font-semibold text-slate-800">Active Tickets</h3>
-          <p className="text-xs text-slate-400 mt-0.5">{tickets.length} open / in-progress tickets</p>
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-indigo-50">
+            <Activity className="w-3.5 h-3.5 text-indigo-500" />
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Active Tickets</h3>
+            <p className="text-[10px] text-slate-400">{tickets.length} open / in-progress</p>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-xs">
             <thead>
               <tr className="bg-slate-50/80">
-                {["Ticket ID", "Title", "Priority", "SLA Risk %", "Time Remaining", "Status"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                {["Ticket ID", "Title", "Priority", "SLA Risk", "Time Left", "Status"].map((h) => (
+                  <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
                 ))}
@@ -173,20 +176,20 @@ export default function AgentProfile() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {tickets.map((t) => (
-                <tr key={t.id} className="hover:bg-blue-50/40 transition-colors duration-150">
-                  <td className="px-4 py-3 font-medium text-blue-600">{t.id}</td>
-                  <td className="px-4 py-3 text-slate-700 max-w-xs truncate">{t.title}</td>
-                  <td className="px-4 py-3"><PriorityBadge priority={t.priority} /></td>
-                  <td className="px-4 py-3">
+                <tr key={t.id} className="hover:bg-indigo-50/30 transition-colors duration-150">
+                  <td className="px-4 py-2.5 font-medium text-indigo-600">{t.id}</td>
+                  <td className="px-4 py-2.5 text-slate-700 max-w-xs truncate">{t.title}</td>
+                  <td className="px-4 py-2.5"><PriorityBadge priority={t.priority} /></td>
+                  <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden max-w-[60px]">
+                      <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden max-w-[50px]">
                         <div className={`h-full rounded-full ${getSlaRiskBg(t.sla_risk)} transition-all duration-500`} style={{ width: `${Math.min(t.sla_risk, 100)}%` }} />
                       </div>
-                      <span className={`text-xs font-bold tabular-nums ${getSlaRiskColor(t.sla_risk)}`}>{t.sla_risk}%</span>
+                      <span className={`text-[11px] font-bold tabular-nums ${getSlaRiskColor(t.sla_risk)}`}>{t.sla_risk}%</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-600 font-medium tabular-nums">{t.time_remaining}</td>
-                  <td className="px-4 py-3"><StatusBadge status={t.status} /></td>
+                  <td className="px-4 py-2.5 text-slate-600 font-medium tabular-nums">{t.time_remaining}</td>
+                  <td className="px-4 py-2.5"><StatusBadge status={t.status} /></td>
                 </tr>
               ))}
 
